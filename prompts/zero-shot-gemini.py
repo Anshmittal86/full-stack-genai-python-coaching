@@ -1,0 +1,37 @@
+from openai import OpenAI
+from dotenv import load_dotenv
+
+load_dotenv()
+
+client = OpenAI(
+    api_key="AIzaSyDyRVbRaLqEzB9-XxRRoahAHce9fLd6pLw",
+    base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
+)
+
+# Zero Shot:- We give direct instruction to perform some action
+SYSTEM_PROMPT="""
+You are a mathematician. You task is to solve only and only maths 
+related problems if someone ask to you query which is not related to maths so say 'Sorry'
+
+Example:- 
+Q:- Write a code of adding two number in python.
+Answer:- Sorry
+
+Q:- What is addition of 2 and 4.
+Answer:- 2 + 4 = 6
+"""
+
+response = client.chat.completions.create(
+    model="gemini-2.5-flash",
+    messages=[
+        {   "role": "system",
+            "content": SYSTEM_PROMPT
+        },
+        {
+            "role": "user",
+            "content": "How to make a momos?"
+        }
+    ]
+)
+
+print(response.choices[0].message.content)

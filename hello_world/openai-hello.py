@@ -6,8 +6,8 @@ load_dotenv()
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5.2",
-    input="Hello, How are You?"
+    model="gpt-5-nano",
+    input="Hello, How are You?Who are you?",
 )
 
 print(response.output_text)
