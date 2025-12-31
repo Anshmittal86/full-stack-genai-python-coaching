@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 client = OpenAI(
-    api_key="AIzaSyDyRVbRaLqEzB9-XxRRoahAHce9fLd6pLw",
+    api_key="PASTE_YOUR_GEMINI_API_KEY_HERE",
     base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
 )
 
@@ -24,14 +24,10 @@ Answer:- 2 + 4 = 6
 response = client.chat.completions.create(
     model="gemini-2.5-flash",
     messages=[
-        {   "role": "system",
-            "content": SYSTEM_PROMPT
-        },
-        {
-            "role": "user",
-            "content": "How to make a momos?"
-        }
+        { "role": "system", "content": SYSTEM_PROMPT },
+        { "role": "user", "content": "Write a code of adding two number in python." }
     ]
 )
+
 
 print(response.choices[0].message.content)

@@ -5,10 +5,12 @@ load_dotenv()
 
 client = OpenAI()
 
-response = client.responses.create(
-    model="gpt-5-nano",
-    input="Hello, How are You?Who are you?",
+response = client.chat.completions.create(
+    model="gpt-4o-mini",
+    messages=[
+        { "role": "system", "content": "You are a helpful assistant." },
+        { "role": "user", "content": "Hello? How are you!" }
+    ]
 )
 
-print(response.output_text)
-
+print(response.choices[0].message.content)

@@ -3,7 +3,10 @@ from openai import OpenAI
 
 load_dotenv()
 
-client = OpenAI()
+client = OpenAI(
+    api_key="PASTE_YOUR_GEMINI_API_KEY_HERE",
+    base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
+)
 
 # Few Shot:- Directly giving the inst to the model and few examples to the model
 SYSTEM_PROMPT="""
@@ -19,7 +22,7 @@ Answer:- 2 + 4 = 6
 """
 
 response = client.chat.completions.create(
-    model="gpt-4o-mini",
+    model="gemini-2.5-flash",
     messages=[
         { "role": "system", "content": SYSTEM_PROMPT },
         { "role": "user", "content": "Write a code of adding two number in python." }
