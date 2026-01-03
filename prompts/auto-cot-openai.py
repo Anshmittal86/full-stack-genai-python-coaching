@@ -1,10 +1,10 @@
 from dotenv import load_dotenv
 from openai import OpenAI
+import json
 
 load_dotenv()
 
 client = OpenAI()
-
 
 SYSTEM_PROMPT ="""
     You're an expert AI Assistant in resolving user queries using chain of thought. 
@@ -35,13 +35,40 @@ SYSTEM_PROMPT ="""
     PLAN: { "step": "OUTPUT", "content": "3.5" }
 """
 
-response = client.chat.completions.create(
-    model="gpt-4o-mini",
-    response_format={ "type": "json_object" },
-    messages=[
-        { "role": "system", "content": SYSTEM_PROMPT },
-        { "role": "user", "content": "Hey, write a code to add n number is js" }
-    ]
-)
+message_history = [
+    {"role": "system", "content": SYSTEM_PROMPT}
+]
 
-print(response.choices[0].message.content)
+while True:
+    user_query = input("👨: ")
+    message_history.append({"role": "user", "content": user_query})
+
+    while True:
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            response_format={"type": "json_object"},
+            messages=message_history
+        )
+
+        raw_result = response.choices[0].message.content
+        message_history.append({"role": "assistant", "content": raw_result})
+        parsed_result = json.loads(raw_result)
+
+        step = parsed_result.get("step")
+        content = parsed_result.get("content")
+
+        if step == "START":
+            print(f"🔥: {content}")
+            continue
+
+        if step == "PLAN":
+            print(f"🧠: {content}")
+            continue
+
+        if step == "OUTPUT":
+            print(f"🤖: {content}")
+            break   # exit inner loop after final answer
+
+    continue_query = input("🤖 Do you want to continue (Y/N): ").strip().lower()
+    if continue_query not in ("y", "yes"):
+        break   

@@ -19,7 +19,7 @@ Answer:- 2 + 4 = 6
 """
 
 response = client.chat.completions.create(
-    model="gpt-4o-mini",
+    model="gpt-5-nano",
     messages=[
         { "role": "system", "content": SYSTEM_PROMPT },
         { "role": "user", "content": "Write a code of adding two number in python." }
