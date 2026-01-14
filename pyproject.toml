@@ -7,6 +7,7 @@ requires-python = ">=3.14"
 dependencies = [
     "langchain-community>=0.4.1",
     "langchain-openai>=1.1.7",
+    "langchain-qdrant>=1.1.0",
     "langchain-text-splitters>=1.1.0",
     "openai>=2.14.0",
     "pathlib>=1.0.1",
@@ -15,4 +16,9 @@ dependencies = [
     "pypdf>=6.5.0",
     "python-dotenv>=1.2.1",
     "requests>=2.32.5",
+]
+
+[tool.uv.workspace]
+members = [
+    "Pydantic/04_Field_validation",
 ]
