@@ -1,0 +1,63 @@
+from langchain_openai import OpenAIEmbeddings
+from langchain_qdrant import QdrantVectorStore
+from dotenv import load_dotenv
+from openai import OpenAI
+
+load_dotenv()
+
+client = OpenAI()
+
+embedding_model = OpenAIEmbeddings(
+        model="text-embedding-3-large",
+    )
+    
+vector_store = QdrantVectorStore.from_existing_collection(
+    url="http://localhost:6333",
+    collection_name="learning-rag",
+    embedding=embedding_model
+)
+
+while True:
+    user_query = input("👨: ")
+    
+    
+    hypothetical_prompt = f"""
+    You are a helpful assistant who answer user's query.
+
+    Example:
+
+    Query: What is Node.js and how does it work?
+    Answer: Node.js is a JavaScript runtime environment that allows you to execute JavaScript code outside of a web browser. It is used for server-side development and building APIs.
+    """
+    
+    response = client.chat.completions.create(
+        model='gpt-5.2',
+        messages=[
+            { "role" : "system", "content": hypothetical_prompt },
+            { "role": "user", "content": user_query },
+        ]
+    )
+    
+    hypothetical_answer = response.choices[0].message.content.strip()
+    
+    # print(step_back_query)
+    relevant_chunks = vector_store.similarity_search(query=hypothetical_answer)
+
+    system_prompt = f"""
+        You are a helpful assistant who answer user's query by using the following pieces of context with the page no. so that user can refer.
+        If you don't know the answer, just say that I don't know with the reason why you are not able to give the answer only give the 2 to 3 line max reason instead of just saying I don't know, don't try to make up an answer.
+        
+        context: {relevant_chunks}
+    """
+
+    response = client.chat.completions.create(
+        model='gpt-5-mini',
+        messages=[
+            { "role" : "system", "content": system_prompt },
+            { "role": "user", "content": user_query },
+        ]
+    )
+
+    pdf_response = response.choices[0].message.content
+
+    print(f"🤖: {pdf_response }")
